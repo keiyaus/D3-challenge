@@ -27,11 +27,11 @@ var chartGroup = svg.append("g")
 var chosenXAxis = "poverty";
 
 // function used for updating x-scale var upon click on axis label
-function xScale(hairData, chosenXAxis) {
+function xScale(data, chosenXAxis) {
     // create scales
     var xLinearScale = d3.scaleLinear()
-        .domain([d3.min(hairData, d => d[chosenXAxis]) * 0.8,
-        d3.max(hairData, d => d[chosenXAxis]) * 1.2
+        .domain([d3.min(data, d => d[chosenXAxis]) * 0.8,
+        d3.max(data, d => d[chosenXAxis]) * 1.2
         ])
         .range([0, width]);
 
@@ -67,17 +67,20 @@ function updateToolTip(chosenXAxis, circlesGroup) {
     var label;
 
     if (chosenXAxis === "poverty") {
-        label = "In Poverty(%)";
+        label = "Poverty";
     }
     else {
-        label = "Age (Median)";
+        label = "Age";
     }
+    // add third label!
+
+    // Also add dynamic Y Labels???
 
     var toolTip = d3.tip()
         .attr("class", "tooltip")
         .offset([80, -60])
         .html(function (d) {
-            return (`${d.state}<br>${label} ${d[chosenXAxis]}<br>Obese (%)${label} ${d.obesity}`);
+            return (`${d.state}<br>${label}: ${d[chosenXAxis]}<br>Obesity: ${d.obesity}`);
         });
 
     circlesGroup.call(toolTip);
