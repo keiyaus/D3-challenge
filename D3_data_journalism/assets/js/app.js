@@ -1,4 +1,4 @@
-var svgWidth = 960;
+var svgWidth = 800;
 var svgHeight = 500;
 
 var margin = {
@@ -25,13 +25,14 @@ var chartGroup = svg.append("g")
 
 // Initial Params
 var chosenXAxis = "poverty";
+var chosenYAxis = "obesity";
 
 // function used for updating x-scale var upon click on axis label
 function xScale(data, chosenXAxis) {
     // create scales
     var xLinearScale = d3.scaleLinear()
-        .domain([d3.min(data, d => d[chosenXAxis]) * 0.8,
-        d3.max(data, d => d[chosenXAxis]) * 1.2
+        .domain([d3.min(data, d => d[chosenXAxis]) * 0.9,
+        d3.max(data, d => d[chosenXAxis]) * 1.1
         ])
         .range([0, width]);
 
@@ -69,13 +70,13 @@ function updateToolTip(chosenXAxis, circlesGroup) {
     if (chosenXAxis === "poverty") {
         label = "Poverty";
     }
-    else {
+    else if (chosenXAxis === "age") {
         label = "Age";
     }
-    // add third label!
-
-    // Also add dynamic Y Labels???
-
+    else {
+        label = "Income";
+    }
+    
     var toolTip = d3.tip()
         .attr("class", "tooltip")
         .offset([80, -60])
@@ -213,7 +214,9 @@ d3.csv("assets/data/data.csv").then(function (data, err) {
                     ageLabel
                         .classed("active", false)
                         .classed("inactive", true);
-                    // Add third label
+                    incomeLabel
+                        .classed("active", false)
+                        .classed("inactive", true);
                 }
                 else if (chosenXAxis === "age") {
                     povertyLabel
@@ -222,10 +225,20 @@ d3.csv("assets/data/data.csv").then(function (data, err) {
                     ageLabel
                         .classed("active", true)
                         .classed("inactive", false);
-                    // Add third label
+                    incomeLabel
+                        .classed("active", false)
+                        .classed("inactive", true);
                 }
                 else {
-                    // Add 3 labels
+                    povertyLabel
+                        .classed("active", false)
+                        .classed("inactive", true);
+                    ageLabel
+                        .classed("active", false)
+                        .classed("inactive", true);
+                    incomeLabel
+                        .classed("active", true)
+                        .classed("inactive", false);
                 }
             }
         });
