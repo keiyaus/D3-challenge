@@ -137,8 +137,8 @@ d3.csv("assets/data/data.csv").then(function (data, err) {
         .attr("cx", d => xLinearScale(d[chosenXAxis]))
         // Change obesity to assignedYAxis later on!
         .attr("cy", d => yLinearScale(d.obesity))
-        .attr("r", 20)
-        .attr("fill", "pink")
+        .attr("r", 15)
+        .attr("fill", "powderblue")
         .attr("opacity", ".5");
 
     // Create group for two x-axis labels
@@ -158,6 +158,13 @@ d3.csv("assets/data/data.csv").then(function (data, err) {
         .attr("value", "age") // value to grab for event listener
         .classed("inactive", true)
         .text("Age (Median)");
+
+    var incomeLabel = labelsGroup.append("text")
+        .attr("x", 0)
+        .attr("y", 60)
+        .attr("value", "income") // value to grab for event listener
+        .classed("inactive", true)
+        .text("Household Income (Median)");
 
     // append y axis
     chartGroup.append("text")
