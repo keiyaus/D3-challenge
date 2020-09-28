@@ -37,7 +37,6 @@ function xScale(data, chosenXAxis) {
         .range([0, width]);
 
     return xLinearScale;
-
 }
 
 // function used for updating xAxis var upon click on axis label
@@ -76,7 +75,7 @@ function updateToolTip(chosenXAxis, circlesGroup) {
     else {
         label = "Income";
     }
-    
+
     var toolTip = d3.tip()
         .attr("class", "tooltip")
         .offset([80, -60])
@@ -97,6 +96,13 @@ function updateToolTip(chosenXAxis, circlesGroup) {
     return circlesGroup;
 }
 
+function renderStates(stateAbbr, newXScale, chosenXAxis) {
+    stateAbbr.transition()
+        .duration(1000)
+        .attr("x", d => newXScale(d[chosenXAxis]))
+        .attr("y", d => yLinearScale(d.obesity))
+}
+
 // Retrieve data from the CSV file and execute everything below
 d3.csv("assets/data/data.csv").then(function (data, err) {
     if (err) throw err;
@@ -113,7 +119,7 @@ d3.csv("assets/data/data.csv").then(function (data, err) {
 
     // Create y scale function
     var yLinearScale = d3.scaleLinear()
-        .domain([0, d3.max(data, d => d.obesity)])
+        .domain([d3.min(data, d => d.obesity) - 2, d3.max(data, d => d.obesity)])
         .range([height, 0]);
 
     // Create initial axis functions
@@ -130,6 +136,9 @@ d3.csv("assets/data/data.csv").then(function (data, err) {
     chartGroup.append("g")
         .call(leftAxis);
 
+
+    
+
     // append initial circles
     var circlesGroup = chartGroup.selectAll("circle")
         .data(data)
@@ -138,9 +147,20 @@ d3.csv("assets/data/data.csv").then(function (data, err) {
         .attr("cx", d => xLinearScale(d[chosenXAxis]))
         // Change obesity to assignedYAxis later on!
         .attr("cy", d => yLinearScale(d.obesity))
-        .attr("r", 15)
+        .attr("r", 12)
         .attr("fill", "powderblue")
-        .attr("opacity", ".5");
+        .attr("opacity", ".5")
+
+    var stateAbbr = chartGroup.selectAll("null").data(data)
+        .enter()
+        .append("text")
+        .text(function (x) {
+            return x.abbr
+        })
+        .attr("x", d => xLinearScale(d[chosenXAxis]))
+        .attr("y", d => yLinearScale(d.obesity))
+        .attr("text-anchor", "middle")
+        .attr("font-size", 10)
 
     // Create group for two x-axis labels
     var labelsGroup = chartGroup.append("g")
@@ -202,6 +222,8 @@ d3.csv("assets/data/data.csv").then(function (data, err) {
 
                 // updates circles with new x values
                 circlesGroup = renderCircles(circlesGroup, xLinearScale, chosenXAxis);
+
+                stateAbbr = renderStates(stateAbbr, xLinearScale, chosenXAxis)
 
                 // updates tooltips with new info
                 circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
